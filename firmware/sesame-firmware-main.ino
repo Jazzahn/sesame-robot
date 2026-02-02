@@ -63,7 +63,7 @@ Servo servos[8];
 
 // Lolin S2 Mini Pinout
 const int servoPins[8] = {1, 2, 4, 6, 8, 10, 13, 14};
-
+int servoTrim[8] = {-4, 5, 5, 5, 9, 0, 0, 0};
 
 // Animation constants
 int frameDelay = 100;
@@ -297,7 +297,7 @@ void loop() {
     if (c == '\n' || c == '\r') {
       if (buffer_pos > 0) {
         command_buffer[buffer_pos] = '\0';
-        int motorNum, angle;
+        int motorNum, angle, trim;
         if(strcmp(command_buffer, "run walk") == 0 || strcmp(command_buffer, "rn wf") == 0) { currentCommand = "forward"; runWalkPose(); currentCommand = ""; }
         else if(strcmp(command_buffer, "rn wb") == 0) { currentCommand = "backward"; runWalkBackward(); currentCommand = ""; }
         else if(strcmp(command_buffer, "rn tl") == 0) { currentCommand = "left"; runTurnLeft(); currentCommand = ""; }
@@ -330,6 +330,14 @@ void loop() {
              } else {
                  Serial.println("Invalid motor number (0-7)");
              }
+        }
+        else if (sscanf(command_buffer, "trim %d %d", &motorNum, &trim) == 2) {
+          if (motorNum >= 0 && motorNum < 8) {
+                setServoTrim(motorNum, trim);
+                Serial.print("Servo "); Serial.print(motorNum); Serial.print(" trim set to"); Serial.println(trim);
+              } else {
+                Serial.println("Invalid motor number (0-7)");
+              }
         }
         buffer_pos = 0;
       }
@@ -508,6 +516,12 @@ void setServoAngle(uint8_t channel, int angle) {
   if (channel < 8) {
     servos[channel].write(angle);
     delayWithFace(motorCurrentDelay);
+  }
+}
+
+void setServoTrim(uint8_t channel, int trim) {
+  if (channel < 8) {
+    servoTrim[channel] = trim;
   }
 }
 
