@@ -63,7 +63,9 @@ Servo servos[8];
 
 // Lolin S2 Mini Pinout
 const int servoPins[8] = {1, 2, 4, 6, 8, 10, 13, 14};
-int servoTrim[8] = {-4, 5, 5, 5, 9, 0, 0, 0};
+
+// Servo trim values to adjust neutral positions
+int servoTrim[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 // Animation constants
 int frameDelay = 100;
